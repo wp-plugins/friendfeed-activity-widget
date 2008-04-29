@@ -1,5 +1,5 @@
 === FriendFeed Activity Widget ===
-Contributors: evansims
+Contributors: evansims, nathanchase
 Donate link: http://evansims.com/projects/friendfeed_activity_widget
 Tags: friendfeed, widget
 Requires at least: 2.5
