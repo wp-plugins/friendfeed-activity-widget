@@ -12,6 +12,8 @@ The FriendFeed Activity Widget is a WordPress widget pulls your FriendFeed strea
 
 The FriendFeed Activity Widget is a simple WordPress widget that pulls your FriendFeed stream, pretties it up a bit and shares it with visitors to your blog. It's essentially a lifestream plugin that requires just a few steps to set up.
 
+Please read the installation instructions carefully and ensure that you extract the widget to the correct folder path.
+
 == Installation ==
 
 1. Extract the zip archive and upload the contents to your /wp-contents/plugins/ folder. The files should end up in a directory named "friendfeed-activity".
