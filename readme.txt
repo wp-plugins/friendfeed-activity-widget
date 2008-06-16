@@ -38,7 +38,12 @@ It is highly doubtful, though it has not been tested. Please let me know if you 
 
 == Changes ==
 
+Version 1.1.1
+
+* Hotfix which should resolve the path issue introduced in the previous release.
+
 Version 1.1
+
 * Added grouping support and formatting for many additional services.
 * Moved styling to an external stylesheet, widget.css.
 * Added date formatting options to widget settings.
@@ -46,21 +51,26 @@ Version 1.1
 * Changed output from UL to DIV structure; may require CSS changes. Sorry!
 
 Version 1.0.1
+
 * Updated to the latest FriendFeed API wrapper.
 * Fixed some XHTML formatting problems.
 * Fixed a potential incompatibility problem with other FriendFeed plugins.
 
 Version 1.0a4
+
 * Fixed an issue with certain grouped events being dropped.
 * Added grouping support and formatting for Flickr events.
 
 Version 1.0a3
+
 * Output changes to resolve potential compatibility problems with other FF plugins.
 * Embedded default styling into widget (suggested by bwana.tv)
 * Rewrote caching system.
 
 Version 1.0a2
+
 * Fixes compatibility problem with Glenn Slaven's FriendFeed comments plugin.
 
 Version 1.0a1
+
 * First plugin release; alpha-state.

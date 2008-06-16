@@ -4,7 +4,7 @@ Plugin Name: FriendFeed Activity Widget
 Plugin URI: http://evansims.com/projects/friendfeed_activity_widget
 Description: A widget for displaying your FriendFeed activity on your blog.
 Author: Evan Sims
-Version: 1.1
+Version: 1.1.1
 Author URI: http://evansims.com
 
 This program is free software: you can redistribute it and/or modify
@@ -36,9 +36,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 	function widget_friendfeed_headers() {
 
-		$pluginurl = get_bloginfo('wpurl').'/wp-content/plugins/friendfeed-activity/';
+		$path = __FILE__;
+		$path = substr($path, 0, strrpos($path, '/'));
+		$path = substr($path, strrpos($path, '/') + 1);
 
-		echo '<link rel="stylesheet" type="text/css" href="' . $pluginurl . 'widget.css" />';
+		$pluginurl = get_bloginfo('wpurl') . "/wp-content/plugins/{$path}/";
+
+		echo '<link rel="stylesheet" type="text/css" href="' . $pluginurl . 'widget.css" />' . NL;
 
 	}
 
@@ -131,7 +135,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				'seesmic::' => array('title' => 'Posted a video: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'seesmic::group' => array('title' => 'Posted %count videos', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'brightkitecom::' => array('title' => 'Noted: %link+title', 'linkall' => false, 'group_format' => null),
-				'brightkitecom::group' => array('title' => 'Shared %count notes', 'linkall' => false, 'group_format' => null)
+				'brightkitecom::group' => array('title' => 'Shared %count notes', 'linkall' => false, 'group_format' => null),
+				'disqus::' => array('title' => 'Commented on %link+title', 'linkall' => false, 'group_format' => null),
+				'disqus::group' => array('title' => 'Posted %count comments', 'linkall' => false, 'group_format' => null)
 
 			);
 
