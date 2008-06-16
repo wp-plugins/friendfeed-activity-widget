@@ -4,7 +4,7 @@ Plugin Name: FriendFeed Activity Widget
 Plugin URI: http://evansims.com/projects/friendfeed_activity_widget
 Description: A widget for displaying your FriendFeed activity on your blog.
 Author: Evan Sims
-Version: 1.0.1
+Version: 1.1
 Author URI: http://evansims.com
 
 This program is free software: you can redistribute it and/or modify
@@ -22,13 +22,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 	@define('NL', "\n");
+	@define('TB', "\t");
+	@define('FF_WIDGET_DEBUG', false);
 
 	function friendfeed_activity($options = null) {
 
 		if(!$options) { echo '<p>Please configure your FriendFeed widget.</p>'; return; }
 
 		if(!function_exists('widget_friendfeed')) { widget_friendfeed_init(false); }
-		widget_friendfeed($options);
+		widget_friendfeed(null, $options);
+
+	}
+
+	function widget_friendfeed_headers() {
+
+		$pluginurl = get_bloginfo('wpurl').'/wp-content/plugins/friendfeed-activity/';
+
+		echo '<link rel="stylesheet" type="text/css" href="' . $pluginurl . 'widget.css" />';
 
 	}
 
@@ -73,7 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			if($stream) {
 				$stream = unserialize($stream);
 				widget_friendfeed_render($stream, $timer, $options);
-			} else { echo('<p>Your freed could not be retrieved at this time. Try again later.</p>'); }
+			} else { echo('<p>Your feed could not be retrieved at this time. Try again later.</p>'); }
 
 			echo $after_widget;
 
@@ -81,7 +91,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 		function widget_friendfeed_render($ret, $published, $options) {
 
-			if(!$ret) return('<p>Your freed could not be retrieved at this time. Try again later.</p>');
+			if(!$ret) return('<p>Your feed could not be retrieved at this time. Try again later.</p>');
 			if(!$published) $published = time();
 
 			$group_events = true;
@@ -100,24 +110,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				'default' => array('title' => false, 'linkall' => true, 'group_format' => null),
 				'twitter::' => array('title' => false, 'linkall' => false, 'group_format' => null),
 				'lastfm::' => array('title' => 'Favorited %link+title', 'linkall' => false, 'group_format' => null),
-				'magnolia::group' => array('title' => 'Bookmarked %count links:', 'linkall' => false, 'group_format' => null),
+				'magnolia::group' => array('title' => 'Bookmarked %count links', 'linkall' => false, 'group_format' => null),
 				'magnolia::' => array('title' => 'Bookmarked a link: %link+title', 'linkall' => false, 'group_format' => null),
 				'flickr::' => array('title' => 'Shared an image: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
-				'flickr::group' => array('title' => 'Shared %count images:', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'flickr::group' => array('title' => 'Shared %count images', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'google-reader::' => array('title' => 'Shared: %link+title', 'linkall' => false, 'group_format' => null),
-				'google-reader::group' => array('title' => 'Shared %count links:', 'linkall' => false, 'group_format' => null),
+				'google-reader::group' => array('title' => 'Shared %count links', 'linkall' => false, 'group_format' => null),
 				'youtube:favorite:' => array('title' => 'Favorited a video: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
-				'youtube:favorite:group' => array('title' => 'Favorited %count videos:', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'youtube:favorite:group' => array('title' => 'Favorited %count videos', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'smugmug::' => array('title' => 'Shared an image: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
-				'smugmug::group' => array('title' => 'Shared %count images:', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'smugmug::group' => array('title' => 'Shared %count images', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'reddit:like:' => array('title' => 'Liked a story: %link+title', 'linkall' => false, 'group_format' => null),
-				'reddit:like:group' => array('title' => 'Liked %count stories:', 'linkall' => false, 'group_format' => null)
+				'reddit:like:group' => array('title' => 'Liked %count stories', 'linkall' => false, 'group_format' => null),
+				'friendfeed:link:' => array('title' => 'Shared a link: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'friendfeed:link:group' => array('title' => 'Shared %count links', 'linkall' => false, 'group_format' => 'list'),
+				'amazoncom::' => array('title' => 'Added a product to their wishlist:', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'amazoncom::group' => array('title' => 'Added %count products to their wishlis:', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'pandora:song:' => array('title' => 'Bookmarked %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'pandora:song:group' => array('title' => 'Bookmarked %count songs', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'seesmic::' => array('title' => 'Posted a video: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'seesmic::group' => array('title' => 'Posted %count videos', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'brightkitecom::' => array('title' => 'Noted: %link+title', 'linkall' => false, 'group_format' => null),
+				'brightkitecom::group' => array('title' => 'Shared %count notes', 'linkall' => false, 'group_format' => null)
 
 			);
 
 			$events = array();
 
-			//print_r($ret);
+			if(defined('FF_WIDGET_DEBUG') && FF_WIDGET_DEBUG == true) {
+				echo "<!-- \n\n";
+				print_r($ret);
+				echo "\n\n-->\n\n";
+			}
 
 			foreach($ret->entries as $event) {
 				if($twitter_hide_replies == true && $event->service->name == 'Twitter' && substr($event->title, 0, 1) == '@') continue;
@@ -135,18 +159,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 						if(count($event->media) > 1 && isset($event->media[$t]->title)) $title = $event->media[$t]->title;
 
 						$link = $event->link;
-						if(count($event->media) > 1 && isset($event->media[$t]->content[0]->url)) $link = $event->media[$t]->content[0]->url;
+						if($event->service->name == 'Flickr') { $link = $event->service->profileUrl; }
+						elseif(count($event->media) > 1 && isset($event->media[$t]->content[0]->url)) { $link = $event->media[$t]->content[0]->url; }
 
 						if(isset($event->media[$t]->thumbnails[0]->url)) $thumb['url'] = $event->media[$t]->thumbnails[0]->url;
 						if(isset($event->media[$t]->thumbnails[0]->width)) $thumb['width'] = $event->media[$t]->thumbnails[0]->width;
 						if(isset($event->media[$t]->thumbnails[0]->height)) $thumb['height'] = $event->media[$t]->thumbnails[0]->height;
 
-						if(count($event->media) > 1) $events[] = array('link' => $link, 'title' => $title, 'published' => $event->published, 'service-icon' => $event->service->iconUrl, 'service' => ereg_replace('[^A-Za-z0-9\-]','',str_replace(' ', '-', strtolower($event->service->name))), 'type' => $type, 'thumbnail' => $thumb, 'group' => false);
+						if(count($event->media) > 1) $events[] = array('link' => htmlspecialchars($link), 'title' => $title, 'published' => $event->published, 'service-icon' => $event->service->iconUrl, 'service' => ereg_replace('[^A-Za-z0-9\-]','',str_replace(' ', '-', strtolower($event->service->name))), 'type' => $type, 'thumbnail' => $thumb, 'group' => false);
 					}
 					if(count($event->media) > 1) continue;
 				}
 
-				$events[] = array('link' => $event->link, 'title' => $event->title, 'published' => $event->published, 'service-icon' => $event->service->iconUrl, 'service' => ereg_replace('[^A-Za-z0-9\-]','',str_replace(' ', '-', strtolower($event->service->name))), 'type' => $type, 'thumbnail' => $thumb, 'group' => false);
+				$events[] = array('link' => htmlspecialchars($event->link), 'title' => htmlentities($event->title, ENT_QUOTES, 'UTF-8'), 'published' => $event->published, 'service-icon' => $event->service->iconUrl, 'service-name' => $event->service->name, 'service-profile' => htmlspecialchars($event->service->profileUrl), 'service' => ereg_replace('[^A-Za-z0-9\-]','',str_replace(' ', '-', strtolower($event->service->name))), 'type' => $type, 'thumbnail' => $thumb, 'group' => false);
 
 			} unset($ret);
 
@@ -170,10 +195,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			}
 
 			echo '<!-- Updated on ' . date('r', $published) . ' -->' . NL;
-			echo '<ul id="friendfeed-activity" style="margin: 1em 0; padding: 0;">' . NL;
+			echo '<div id="ff-activity">' . NL;
 
-			$event_counter = 0;
+			$date_format = $options['ffaw_date_format'];
+			if(!$date_format) $date_format = 'l G:i';
+
+			$event_counter = 0; $odd = false;
 			for($e = 0; $e < count($events); $e++) {
+
+				$odd = !$odd;
 
 				$event_counter++;
 				if($event_counter > $limit_events) break;
@@ -196,15 +226,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				$mutator = $mutators['default'];
 				if(isset($mutators[$mutateid])) $mutator = $mutators[$mutateid];
 
-				//echo "<!-- Mutator: {$mutateid} -->\n";
+				if(defined('FF_WIDGET_DEBUG') && FF_WIDGET_DEBUG == true) echo "<!-- Mutator: {$mutateid} -->\n";
 
-				echo "<li class=\"ff-{$event['service']}\" style=\"list-style-image: url('{$event['service-icon']}'); margin: 0 0 .75em 0; padding: 0;\">" . NL;
-				echo '<p class="title" style="margin: 0; padding: 0;">' . NL;
+				echo '<div class="ff-event ff-' . $event['service'];
+				if($odd) echo ' ff-event-odd';
+				if(!$odd) echo ' ff-event-even';
+				echo '" style="background-image: url(\'' . $event['service-icon'] . '\');">' . NL;
+				echo TB . '<p class="title">';
 
 				if($mutator && $mutator['title']) {
 					$title = str_replace('%title', $event['title'], $mutator['title']);
 					if($children) { $title = str_replace('%count', count($children) + 1, $title); }
 					$title = str_replace('%link+title', "<a href=\"{$event['link']}\" class=\"external\">{$event['title']}</a>", $title);
+					$title = str_replace('%open_link', "<a href=\"{$event['link']}\" class=\"external\">$title", $title);
+					$title = str_replace('%close_link', "$title</a>", $title);
 					echo $title;
 				} elseif (!$children) {
 					if($event['link'] && (!$mutator || $mutator['linkall'])) echo "<a href=\"{$event['link']}\" class=\"external\">";
@@ -262,9 +297,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					if(!isset($mutator['group_format']) || !$mutator['group_format']) $mutator['group_format'] = 'list';
 
 					if($mutator['group_format'] == 'thumbnails') {
-						echo '<div class="thumbnails" style="margin: .25em 0 0 0; padding: 0;">' . NL;
+						echo TB . '<div class="ff-thumbnails">' . NL;
 					} elseif($mutator['group_format'] == 'list') {
-						echo '<ul style="list-style: none; margin: .25em 0 0 0; padding: 0;">' . NL;
+						echo TB . '<div class="ff-list">' . NL;
 					}
 
 					if(!$children) $children[] = $event;
@@ -272,39 +307,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					foreach($children as $child) {
 
 						if($mutator['group_format'] == 'thumbnails') {
-							echo '<a href="' . $child['link'] . '" rel="me" class="external" title="' . $child['title'] . '">';
+							echo TB . TB . '<a href="' . $child['link'] . '" rel="me" class="external" title="' . $child['title'] . '">';
 							echo '<img alt="' . $child['title']. '" src="' . $child['thumbnail']['url'] . '" />'; // width="' . $child['thumbnail']['width'] . '" height="' . $child['thumbnail']['height'] . '" />';
 							echo '</a>' . NL;
 						} elseif($mutator['group_format'] == 'list') {
-							echo '<li style="margin: 0 0 .25em 0; padding: 0;"><p style="margin: 0; padding: 0;"><a href="' . $child['link'] . '" rel="me" class="external" title="' . $child['title'] . '">';
+							echo TB . TB . '<p><a href="' . $child['link'] . '" rel="me" class="external" title="' . $child['title'] . '">';
 							echo $child['title'];
-							echo '</a></p></li>' . NL;
+							echo '</a></p>' . NL;
 						}
 
 					}
 
 					if($mutator['group_format'] == 'thumbnails') {
-						echo '</div>' . NL;
+						echo TB . '</div>' . NL;
 					} elseif($mutator['group_format'] == 'list') {
-						echo '</ul>' . NL;
+						echo TB . '</div>' . NL;
 					}
 
 				}
 
-				echo '<p class="published" style="margin: 0; padding: 0;"><small>';
-				if(date('dmY') == date('dmY', $event['published'])) echo 'Today';
-				else echo date('l', $event['published']);
-				echo ' at ' . date('G:i', $event['published']) . '</small></p>' . NL;
+				echo TB . '<p class="ff-meta"><small>';
 
-				echo "</li>" . NL;
+				if($event['service-profile']) echo '<a href="' . $event['service-profile'] . '" class="external">';
+				//echo $date_format;
+				echo date($date_format, $event['published']);
+				if($event['service-profile']) echo '</a>';
+
+				echo '</small></p>' . NL;
+
+				echo "</div>" . NL;
 
 			}
 
-			echo '<li class="ff-account" style="list-style: none;"><p style="margin: 0; padding: 0"><a href="http://friendfeed.com/' . $options['username'] . '" rel="me" class="external">More &#8230;</a></p></li>' . NL;
+			echo '<p class="ff-account"><a href="http://friendfeed.com/' . $options['username'] . '" rel="me" class="external">My FriendFeed profile &#8230;</a></p>' . NL;
 
-			echo '</ul>' . NL . NL;
-
-			//$stream = ob_get_clean();
+			echo '</div>' . NL . NL;
 
 			return true;
 
@@ -340,6 +377,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			$group_events = true;
 			$twitter_hide_replies = true;
 			$limit_events = 10;
+			$date_format = 'l G:i';
 
 			if($options) {
 				if(isset($options['username'])) $username = $options['username'];
@@ -348,6 +386,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				if(isset($options['group_events'])) $group_events = $options['group_events'];
 				if(isset($options['twitter_hide_replies'])) $twitter_hide_replies = $options['twitter_hide_replies'];
 				if(isset($options['limit_events'])) $limit_events = $options['limit_events'];
+				if(isset($options['ffaw_date_format'])) $date_format = $options['ffaw_date_format'];
 
 				if($options['group_events'] != 'true') $group_events = false;
 				if($options['twitter_hide_replies'] != 'true') $twitter_hide_replies = false;
@@ -358,6 +397,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				$options['apikey'] = stripslashes($_POST['widget_friendfeed_apikey']);
 				$options['title'] = stripslashes($_POST['widget_friendfeed_title']);
 				$options['limit_events'] = stripslashes($_POST['widget_friendfeed_limit_events']);
+				$options['ffaw_date_format'] = stripslashes($_POST['widget_friendfeed_date_format']);
 				if($_POST['widget_friendfeed_group_events']) { $options['group_events'] = 'true'; } else { $options['group_events'] = ''; }
 				if($_POST['widget_friendfeed_twitter_hide_replies']) { $options['twitter_hide_replies'] = 'true'; } else { $options['twitter_hide_replies'] = ''; }
 				update_option('widget_friendfeed', $options);
@@ -402,6 +442,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 		  ?></select> events.</p>
 
+		  <p>Date/time format: <input name="widget_friendfeed_date_format" size="8" style="vertical-align: middle" value="<?php echo($date_format); ?>" /> (<a href="http://codex.wordpress.org/Formatting_Date_and_Time" target="_blank">Formatting Guide</a>)</p>
+
 		  <p><input type="checkbox" name="widget_friendfeed_group_events" id="widget_friendfeed_group_events" value="true" <?php if($group_events) {  ?>checked="checked"<?php } ?> /> <label for="widget_friendfeed_group_events">Group events where possible</label><br />
 		     <input type="checkbox" name="widget_friendfeed_twitter_hide_replies" id="widget_friendfeed_twitter_hide_replies" value="true" <?php if($twitter_hide_replies) { ?>checked="checked"<?php } ?> /> <label for="widget_friendfeed_twitter_hide_replies">Hide Twitter messages beginning with @replies</label></p>
 
@@ -424,5 +466,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	}
 
 	add_action('plugins_loaded', 'widget_friendfeed_init');
+	add_action('wp_head', 'widget_friendfeed_headers');
 
 ?>

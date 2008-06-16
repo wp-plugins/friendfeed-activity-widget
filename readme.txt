@@ -16,13 +16,15 @@ The FriendFeed Activity Widget is a simple WordPress widget plugin that pulls yo
 
 1. Extract the zip archive and upload the contents to your /wp-contents/plugins/ folder. The files should end up in a directory named ‘friendfeed-activity'.
 2. Log into your WordPress Dashboard and activate the plugin.
-3. Go to your Design ? Widgets page and add the widget to your sidebar. Go ahead and configure it with your API key, nickname and any additional settings you'd like.
+3. Go to your Design -> Widgets page and add the widget to your sidebar. Go ahead and configure it with your API key, nickname and any additional settings you'd like.
+
+That's it!
 
 == Frequently Asked Questions ==
 
 = I'm seeing %BEG_OF_TITLE% and %END_OF_TITLE% in my Widgets UI =
 
-This appears to be a new problem introduced WordPress 2.5. Ensure that you are running the latest version of WordPress, this should resolve the problem.
+Ensure that your web server is running PHP5 and has CURL support enabled.
 
 = Will the widget run under PHP4? =
 
@@ -31,3 +33,32 @@ It is highly doubtful, though it has not been tested. Please let me know if you 
 == Screenshots ==
 
 1. An example of the Widget in action.
+
+== Changes ==
+
+Version 1.1
+* Added grouping support and formatting for many additional services.
+* Moved styling to an external stylesheet, widget.css.
+* Added date formatting options to widget settings.
+* Added proper html encoding for feed links (XHTML validates.)
+* Changed output from UL to DIV structure; may require CSS changes. Sorry!
+
+Version 1.0.1
+* Updated to the latest FriendFeed API wrapper.
+* Fixed some XHTML formatting problems.
+* Fixed a potential incompatibility problem with other FriendFeed plugins.
+
+Version 1.0a4
+* Fixed an issue with certain grouped events being dropped.
+* Added grouping support and formatting for Flickr events.
+
+Version 1.0a3
+* Output changes to resolve potential compatibility problems with other FF plugins.
+* Embedded default styling into widget (suggested by bwana.tv)
+* Rewrote caching system.
+
+Version 1.0a2
+* Fixes compatibility problem with Glenn Slaven's FriendFeed comments plugin.
+
+Version 1.0a1
+* First plugin release; alpha-state.

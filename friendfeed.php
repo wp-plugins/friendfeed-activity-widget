@@ -31,7 +31,7 @@ assert(function_exists("curl_init"));
 //
 //     $friendfeed = new FriendFeed($_GET["nickname"], $_GET["auth_key"]);
 //     $entry = $friendfeed->publish_message("Testing the FriendFeed API");
-//
+// 
 // Users can get their remote key from http://friendfeed.com/remotekey. You
 // should direct users who don't know their remote key to that page.
 // For guidelines on user interface and terminology, check out
@@ -281,7 +281,7 @@ class FriendFeed {
 	if (function_exists("json_decode")) {
 	    return json_decode($str);
 	} else {
-		if(!class_exists('Services_JSON')) require_once("JSON.php");
+	    require_once("JSON.php");
 	    $json = new Services_JSON();
 	    return $json->decode($str);
 	}
