@@ -1,0 +1,23 @@
+
+/* 
+-----------------------------------------------
+FriendFeed Activity Widget Stylesheet
+-----------------------------------------------
+*/
+
+#ff-activity { margin: 1em 0; }
+
+	#ff-activity .ff-event { margin: 0 0 1.15em 0; background-repeat: no-repeat; background-position: 0 1px; padding: 0 0 0 24px; }
+	
+		#ff-activity .title { margin: 0 0 .5em 0; }
+
+		#ff-activity .ff-list { margin: .5em 0; }
+		#ff-activity .ff-list p { margin: 0 0 .5em 0; }
+
+		#ff-activity .ff-thumbnails { margin: .5em 0 .5em 0; }
+		#ff-activity .ff-thumbnails img { margin: 0; padding: 0; }
+		#ff-activity .ff-thumbnails a { margin: 0 .25em .25em 0; padding: 0; }
+
+		#ff-activity .ff-meta { margin: 0; }
+
+	#ff-activity .ff-account { margin: 1em 0 0 0; background: url('http://friendfeed.com/static/images/icons/internal.png?v=99bf8708c13e43d1fbaf614404fe1314') no-repeat 1px 0; padding-left: 24px; }
