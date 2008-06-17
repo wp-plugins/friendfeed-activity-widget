@@ -38,6 +38,10 @@ It is highly doubtful, though it has not been tested. Please let me know if you 
 
 == Changes ==
 
+Version 1.1.2
+
+* Fixes a bug with Twitter hash tag detection.
+
 Version 1.1.1
 
 * Hotfix which should resolve the path issue introduced in the previous release.
