@@ -4,7 +4,7 @@ Plugin Name: FriendFeed Activity Widget
 Plugin URI: http://evansims.com/projects/friendfeed_activity_widget
 Description: A widget for displaying your FriendFeed activity on your blog.
 Author: Evan Sims
-Version: 1.1.1
+Version: 1.1.2
 Author URI: http://evansims.com
 
 This program is free software: you can redistribute it and/or modify
@@ -274,7 +274,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					if($event['service'] == 'twitter' && strpos($event['title'], '#')) {
 						$out = '';
 						for($i = 0; $i < strlen($event['title']); $i++) {
-							if($event['title'][$i] != '#') { $out .= $event['title'][$i]; continue; }
+							if(($event['title'][$i] != '#')||($i > 0 && $event['title'][$i] == '#' && $event['title'][$i-1] == '&')) { $out .= $event['title'][$i]; continue; }
 							if($event['title'][$i] == '#') {
 								$twit_hash = null;
 								for($s = ($i+1); $s < strlen($event['title']); $s++) {
