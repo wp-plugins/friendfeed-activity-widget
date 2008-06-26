@@ -4,7 +4,7 @@ Plugin Name: FriendFeed Activity Widget
 Plugin URI: http://evansims.com/projects/friendfeed_activity_widget
 Description: A widget for displaying your FriendFeed activity on your blog.
 Author: Evan Sims
-Version: 1.1.2
+Version: 1.1.3
 Author URI: http://evansims.com
 
 This program is free software: you can redistribute it and/or modify
@@ -116,16 +116,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				'lastfm::' => array('title' => 'Favorited %link+title', 'linkall' => false, 'group_format' => null),
 				'magnolia::group' => array('title' => 'Bookmarked %count links', 'linkall' => false, 'group_format' => null),
 				'magnolia::' => array('title' => 'Bookmarked a link: %link+title', 'linkall' => false, 'group_format' => null),
+				'delicious::' => array('title' => 'Bookmarked a link: %link+title', 'linkall' => false, 'group_format' => null),
+				'delicious::group' => array('title' => 'Bookmarked %count links', 'linkall' => false, 'group_format' => null),
 				'flickr::' => array('title' => 'Shared an image: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'flickr::group' => array('title' => 'Shared %count images', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'google-reader::' => array('title' => 'Shared: %link+title', 'linkall' => false, 'group_format' => null),
 				'google-reader::group' => array('title' => 'Shared %count links', 'linkall' => false, 'group_format' => null),
 				'youtube:favorite:' => array('title' => 'Favorited a video: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'youtube:favorite:group' => array('title' => 'Favorited %count videos', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'vimeo:like:' => array('title' => 'Liked a video: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
+				'vimeo:like:group' => array('title' => 'Liked %count videos', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'smugmug::' => array('title' => 'Shared an image: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'smugmug::group' => array('title' => 'Shared %count images', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'reddit:like:' => array('title' => 'Liked a story: %link+title', 'linkall' => false, 'group_format' => null),
 				'reddit:like:group' => array('title' => 'Liked %count stories', 'linkall' => false, 'group_format' => null),
+				'digg:digg:' => array('title' => 'Dugg a story: %link+title', 'linkall' => false, 'group_format' => null),
+				'digg:digg:group' => array('title' => 'Dugg %count stories', 'linkall' => false, 'group_format' => null),
 				'friendfeed:link:' => array('title' => 'Shared a link: %link+title', 'linkall' => false, 'group_format' => 'thumbnails'),
 				'friendfeed:link:group' => array('title' => 'Shared %count links', 'linkall' => false, 'group_format' => 'list'),
 				'amazoncom::' => array('title' => 'Added a product to their wishlist:', 'linkall' => false, 'group_format' => 'thumbnails'),
@@ -137,7 +143,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				'brightkitecom::' => array('title' => 'Noted: %link+title', 'linkall' => false, 'group_format' => null),
 				'brightkitecom::group' => array('title' => 'Shared %count notes', 'linkall' => false, 'group_format' => null),
 				'disqus::' => array('title' => 'Commented on %link+title', 'linkall' => false, 'group_format' => null),
-				'disqus::group' => array('title' => 'Posted %count comments', 'linkall' => false, 'group_format' => null)
+				'disqus::group' => array('title' => 'Posted %count comments', 'linkall' => false, 'group_format' => null),
+				'linkedin:newjob:' => array('title' => 'Updated job title: %link+title', 'linkall' => false, 'group_format' => null),
+				'gmailgoogle-talk::' => array('title' => 'Updated status: %title', 'linkall' => false, 'group_format' => null)
 
 			);
 
@@ -177,7 +185,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					if(count($event->media) > 1) continue;
 				}
 
-				$events[] = array('link' => htmlspecialchars($event->link), 'title' => htmlentities($event->title, ENT_QUOTES, 'UTF-8'), 'published' => $event->published, 'service-icon' => $event->service->iconUrl, 'service-name' => $event->service->name, 'service-profile' => htmlspecialchars($event->service->profileUrl), 'service' => ereg_replace('[^A-Za-z0-9\-]','',str_replace(' ', '-', strtolower($event->service->name))), 'type' => $type, 'thumbnail' => $thumb, 'group' => false);
+				$geo = null;
+
+				if(isset($event->geo)) {
+					$geo['lat'] = $event->geo->lat;
+					$geo['lon'] = $event->get->long;
+				}
+
+				$events[] = array('link' => htmlspecialchars($event->link), 'title' => htmlentities($event->title, ENT_QUOTES, 'UTF-8'), 'published' => $event->published, 'service-icon' => $event->service->iconUrl, 'service-name' => $event->service->name, 'service-profile' => htmlspecialchars($event->service->profileUrl), 'service' => ereg_replace('[^A-Za-z0-9\-]','',str_replace(' ', '-', strtolower($event->service->name))), 'type' => $type, 'thumbnail' => $thumb, 'group' => false, 'geo' => $geo);
 
 			} unset($ret);
 
@@ -232,7 +247,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				$mutator = $mutators['default'];
 				if(isset($mutators[$mutateid])) $mutator = $mutators[$mutateid];
 
-				if(defined('FF_WIDGET_DEBUG') && FF_WIDGET_DEBUG == true) echo "<!-- Mutator: {$mutateid} -->\n";
+				if(defined('FF_WIDGET_DEBUG') && FF_WIDGET_DEBUG == true) {
+					echo "<!-- Mutator: {$mutateid} -->\n";
+				}
 
 				echo '<div class="ff-event ff-' . $event['service'];
 				if($odd) echo ' ff-event-odd';
@@ -242,31 +259,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 				if($mutator && $mutator['title']) {
 					$title = str_replace('%title', $event['title'], $mutator['title']);
-					if($children) { $title = str_replace('%count', count($children) + 1, $title); }
-					$title = str_replace('%link+title', "<a href=\"{$event['link']}\" class=\"external\">{$event['title']}</a>", $title);
-					$title = str_replace('%open_link', "<a href=\"{$event['link']}\" class=\"external\">$title", $title);
-					$title = str_replace('%close_link', "$title</a>", $title);
+
+					if(!$children && !$mutator['linkall'] && !strpos($title, '%link')) {
+						$title = preg_replace("/(ftp:\/\/|http:\/\/|https:\/\/|www|[a-zA-Z0-9-]+\.|[a-zA-Z0-9\.-]+@)(([a-zA-Z0-9-][a-zA-Z0-9-]+\.)+[a-zA-Z0-9-\.\/\_\?\%\#\&\=\;\~\!\(\)]+)/","<a href=\"http://\\1\\2\" class=\"external\">\\1\\2</a>", $title);
+						$title = str_replace('http://http://', 'http://', $title);
+					} else {
+						if($children) { $title = str_replace('%count', count($children) + 1, $title); }
+						$title = str_replace('%link+title', "<a href=\"{$event['link']}\" class=\"external\">{$event['title']}</a>", $title);
+						$title = str_replace('%open_link', "<a href=\"{$event['link']}\" class=\"external\">$title", $title);
+						$title = str_replace('%close_link', "$title</a>", $title);
+					}
+
 					echo $title;
+
 				} elseif (!$children) {
 					if($event['link'] && (!$mutator || $mutator['linkall'])) echo "<a href=\"{$event['link']}\" class=\"external\">";
 					if(!$mutator['linkall']) { $event['title'] = preg_replace("/(ftp:\/\/|http:\/\/|https:\/\/|www|[a-zA-Z0-9-]+\.|[a-zA-Z0-9\.-]+@)(([a-zA-Z0-9-][a-zA-Z0-9-]+\.)+[a-zA-Z0-9-\.\/\_\?\%\#\&\=\;\~\!\(\)]+)/","<a href=\"http://\\1\\2\" class=\"external\">\\1\\2</a>", $event['title']); $event['title'] = str_replace('http://http://', 'http://', $event['title']); }
 					if($event['service'] == 'twitter' && strpos($event['title'], '@')) {
 						$out = '';
 						for($i = 0; $i < strlen($event['title']); $i++) {
-							if($event['title'][$i] != '@') { $out .= $event['title'][$i]; continue; }
-							if($event['title'][$i] == '@') {
-								$twit_identity = null;
+							if($event['title'][$i] != '@') {
+								$out .= $event['title'][$i];
+								continue;
+							} else {
+								$identity = '';
 								for($s = ($i+1); $s < strlen($event['title']); $s++) {
-									if(((ord($event['title'][$s]) > 47 && ord($event['title'][$s]) < 58) ||
-									   (ord($event['title'][$s]) > 64 && ord($event['title'][$s]) < 91) ||
-									   (ord($event['title'][$s]) > 96 && ord($event['title'][$s]) < 123) || ord($event['title'][$s]) == 95) && $s + 1 < strlen($event['title'])) continue;
 
-									$twit_identity = trim(substr($event['title'], ($i + 1), ($s - $i)));
-									$out .= '@<a href="http://twitter.com/' . $twit_identity . '">' . $twit_identity . '</a> ';
-									$i = $s;
-									break;
+									if(
+										(ord($event['title'][$s]) > 47 && ord($event['title'][$s]) < 58) ||
+										(ord($event['title'][$s]) > 64 && ord($event['title'][$s]) < 91) ||
+										(ord($event['title'][$s]) > 96 && ord($event['title'][$s]) < 123) ||
+										 ord($event['title'][$s]) == 95
+									  ) { continue;
+									  } else {
+
+									  	$identity = substr($event['title'], $i+1, (($s - 1) - $i));
+
+										$out .= '@<a href="http://twitter.com/' . $identity . '" class="external">' . $identity . '</a>';
+
+										$i = ($s - 1);
+										break;
+
+									  }
+
 								}
-								if(!$twit_identity) $out .= '@';
+								if(!$identity) $out .= '@';
 							}
 						}
 						$event['title'] = $out;
@@ -279,8 +316,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 								$twit_hash = null;
 								for($s = ($i+1); $s < strlen($event['title']); $s++) {
 									if(((ord($event['title'][$s]) > 47 && ord($event['title'][$s]) < 58) ||
-									   (ord($event['title'][$s]) > 64 && ord($event['title'][$s]) < 91) ||
-									   (ord($event['title'][$s]) > 96 && ord($event['title'][$s]) < 123)) && $s + 1 < strlen($event['title'])) continue;
+									    (ord($event['title'][$s]) > 64 && ord($event['title'][$s]) < 91) ||
+									    (ord($event['title'][$s]) > 96 && ord($event['title'][$s]) < 123))
+									    && $s + 1 < strlen($event['title'])) continue;
 
 									$twit_hash = trim(substr($event['title'], ($i + 1), ($s - $i)));
 									$out .= '#<a href="http://hashtags.org/tag/' . $twit_hash . '/">' . $twit_hash . '</a> ';

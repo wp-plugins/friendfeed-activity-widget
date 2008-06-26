@@ -38,6 +38,11 @@ It is highly doubtful, though it has not been tested. Please let me know if you 
 
 == Changes ==
 
+Version 1.1.3
+
+* Adds formatting for several addition services.
+* Fixes a minor bug with Twitter autolinking of @names and urls.
+
 Version 1.1.2
 
 * Fixes a bug with Twitter hash tag detection.
